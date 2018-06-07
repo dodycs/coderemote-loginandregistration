@@ -10,8 +10,25 @@ EMAIL_REGEX = re.compile(r'^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9
 @app.route('/')
 def index():
     return render_template('index.html')
+
 @app.route('/authenticate')
 def authenticate():
     return render_template('authenticate.html')
 
+@app.route('/register', methods=['POST'])
+def register():
+    fullname = request.form['html_fullname']
+    email = request.form['html_email']
+    password = request.form['html_password']
+    confirm = request.form['html_confirm']
+    print('-------------------------')
+    print('{}, {}, {}, {}'.format(fullname, email, password, confirm))
+    return redirect(url_for('index'))
+
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form['html_email']
+    password = request.form['html_password']
+    return redirect(url_for('index'))
+    
 app.run(debug=True)
