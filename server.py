@@ -15,19 +15,44 @@ def index():
 def authenticate():
     return render_template('authenticate.html')
 
+
+def is_blank(name, field):
+    if len(field) == 0:
+        flash('{} cannot be blank'.format(name))
+        return True
+    return False
+
 @app.route('/register', methods=['POST'])
 def register():
     fullname = request.form['html_fullname']
     email = request.form['html_email']
     password = request.form['html_password']
     confirm = request.form['html_confirm']
-    
-    try:
-        user = create_user(email, fullname, password)
-        session['name'] = user.name
-        return redirect(url_for('index'))
-    except:
-        flash('Email alredy registered')
+
+    is_valid = True
+
+    is_valid = is_blank('Fullname', fullname)
+    is_valid = is_blank('Email', email)
+    is_valid = is_blank('Password', password)
+    is_valid = is_blank('Confirm Password', confirm)
+
+    if password != confirm:
+        flash('Password do not match')
+        return is_valid = False
+    if password > 6:
+        flash('Password have to be more than 6')
+        return is_valid = False
+    if not EMAIL_REGEX.match(email):
+        flash('Email format is wrong')
+        return is_valid = False
+
+    if is_valid:
+        try:
+            user = create_user(email, fullname, password)
+            session['name'] = user.name
+            return redirect(url_for('index'))
+        except:
+            flash('Email alredy registered')
     return redirect(url_for('authenticate'))
 
 @app.route('/login', methods=['POST'])
