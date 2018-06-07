@@ -38,13 +38,13 @@ def register():
 
     if password != confirm:
         flash('Password do not match')
-        return is_valid = False
-    if password > 6:
+        is_valid = False
+    if len(password) > 6:
         flash('Password have to be more than 6')
-        return is_valid = False
+        is_valid = False
     if not EMAIL_REGEX.match(email):
         flash('Email format is wrong')
-        return is_valid = False
+        is_valid = False
 
     if is_valid:
         try:
