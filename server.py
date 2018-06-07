@@ -39,7 +39,7 @@ def register():
     if password != confirm:
         flash('Password do not match')
         is_valid = False
-    if len(password) > 6:
+    if len(password) < 6:
         flash('Password have to be more than 6')
         is_valid = False
     if not EMAIL_REGEX.match(email):
@@ -59,7 +59,20 @@ def register():
 def login():
     email = request.form['html_email']
     password = request.form['html_password']
-    return redirect(url_for('index'))
+
+    try:
+        user = get_user_by_email(email)
+        if user.password == password:
+            session['user_id'] = user.id
+            session['user_name'] = user.email
+            session['name'] = user.name
+            return redirect(url_for('index'))
+        else:
+            flash('Password not match')
+    except:
+        raise
+        flash('Login failed')
+    return redirect(url_for('authenticate'))
 
 @app.route('/logout')
 def logout():
